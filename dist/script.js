@@ -1,0 +1,7 @@
+const sources=document.querySelector('#sources');document.querySelector('#source-open').onclick=()=>sources.showModal();sources.querySelector('.close').onclick=()=>sources.close();
+(()=>{
+const box=document.querySelector('.camp-carousel'),slides=[...box.querySelectorAll('.camp-slide')],dots=[...box.querySelectorAll('[data-slide]')],pause=box.querySelector('[data-camp="pause"]');let current=0,stopped=matchMedia('(prefers-reduced-motion: reduce)').matches;
+function render(){slides.forEach((s,i)=>{s.classList.toggle('active',i===current);s.setAttribute('aria-hidden',String(i!==current))});dots.forEach((d,i)=>d.setAttribute('aria-current',String(i===current)));pause.textContent=stopped?'▶︎':'Ⅱ';pause.setAttribute('aria-label',stopped?'Föteli wiiterlaufä laa':'Föteli aahaltä')}
+function step(n){current=(current+n+slides.length)%slides.length;render()}
+box.querySelector('[data-camp="prev"]').onclick=()=>step(-1);box.querySelector('[data-camp="next"]').onclick=()=>step(1);pause.onclick=()=>{stopped=!stopped;render()};dots.forEach((d,i)=>d.onclick=()=>{current=i;render()});setInterval(()=>{if(!stopped&&!document.hidden&&!box.matches(':hover')&&!box.contains(document.activeElement))step(1)},5000);
+let x;box.addEventListener('touchstart',e=>{x=e.changedTouches[0].clientX},{passive:true});box.addEventListener('touchend',e=>{const delta=e.changedTouches[0].clientX-x;if(Math.abs(delta)>40)step(delta<0?1:-1)},{passive:true});render()})();
